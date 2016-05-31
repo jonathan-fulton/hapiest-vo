@@ -33,17 +33,16 @@ class VO {
          });
     };
 
+    // @TODO: deprecate this method
     toJsObj() {
-        let jsObj = this._immutableMap.toJS();
+        const jsObjFromMap = this._immutableMap.toJS();
+        const jsObj = _.mapValues(jsObjFromMap, propValue => Internal.toJsObj(propValue));
+        return jsObj;
+    }
 
-        jsObj = _.mapValues(jsObj, (propValue) => {
-                if (propValue instanceof VO) {
-            return propValue.toJsObj(); // recursively convert VOs to JS objects
-        } else {
-            return propValue;
-        }
-    });
-
+    // Override default JSON.stringify behavior to output a clean JSON representation
+    toJSON() {
+        const jsObj = this.toJsObj();
         return jsObj;
     }
 
@@ -53,3 +52,21 @@ class VO {
 }
 
 module.exports = VO;
+
+class Internal {
+
+    static toJsObj(value) {
+        if (value instanceof VO) {
+            return value.toJsObj(); // recursively convert VOs to JS objects
+        } else if (Array.isArray(value)) {
+            const resultArray = [];
+            value.forEach((result, index) => {
+                resultArray[index] = Internal.toJsObj(result);
+            });
+            return resultArray;
+        } else {
+            return value;
+        }
+    }
+
+}
