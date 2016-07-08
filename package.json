@@ -1,6 +1,6 @@
 {
   "name": "hapiest-vo",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Extremely simple abstract class that can be used to create immutable Value Objects useful to pick up Intellisense while working in Node.js",
   "main": "index.js",
   "scripts": {
